@@ -29,14 +29,14 @@ $(function() {
       app.$roomSelect.on('change', app.saveRoom);
 
       // Fetch previous messages
-      app.startSpinner();
+      //app.startSpinner();
       app.fetch(false);
 
       // Poll for new messages
-      setInterval(app.fetch, 3000);
+      setInterval(app.fetch, 5000);
     },
     send: function(data) {
-      app.startSpinner();
+      //app.startSpinner();
       // Clear messages input
       app.$message.val('');
 
@@ -47,7 +47,6 @@ $(function() {
         data: JSON.stringify(data),
         contentType: 'application/json',
         success: function (data) {
-          console.dir(data);
           console.log('chatterbox: Message sent');
           // Trigger a fetch to update the messages, pass true to animate
           app.fetch();
@@ -74,7 +73,7 @@ $(function() {
           // Get the last message
           var mostRecentMessage = data.results[data.results.length-1];
           var displayedRoom = $('.chat span').first().data('roomname');
-          app.stopSpinner();
+          // app.stopSpinner();
           app.populateMessages(data.results, animate);
           app.populateRooms(data.results);
           //Fred's extra credit testing of unique messages:
@@ -103,7 +102,7 @@ $(function() {
       // Clear existing messages
 
       app.clearMessages();
-      app.stopSpinner();
+      //app.stopSpinner();
       if (Array.isArray(results)) {
         // Add all fetched messages
         results.forEach(app.addMessage);
@@ -208,7 +207,7 @@ $(function() {
         }
       }
       else {
-        app.startSpinner();
+        //app.startSpinner();
         // Store as undefined for empty names
         app.roomname = app.$roomSelect.val();
 
@@ -228,14 +227,14 @@ $(function() {
       // Stop the form from submitting
       evt.preventDefault();
     },
-    startSpinner: function(){
-      $('.spinner img').show();
-      $('form input[type=submit]').attr('disabled', "true");
-    },
+    // startSpinner: function(){
+    //   $('.spinner img').show();
+    //   $('form input[type=submit]').attr('disabled', "true");
+    // },
 
-    stopSpinner: function(){
-      $('.spinner img').fadeOut('fast');
-      $('form input[type=submit]').attr('disabled', null);
-    }
+    // stopSpinner: function(){
+    //   $('.spinner img').fadeOut('fast');
+    //   $('form input[type=submit]').attr('disabled', null);
+    // }
   };
 }());
