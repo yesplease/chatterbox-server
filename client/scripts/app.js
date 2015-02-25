@@ -13,7 +13,8 @@ $(function() {
 
     init: function() {
       // Get username
-      app.username = window.location.search.substr(10);
+      //app.username = window.location.search.substr(10);
+      app.username = prompt("What is your username?");
 
       // Cache jQuery selectors
       app.$main = $('#main');
@@ -66,23 +67,29 @@ $(function() {
           console.log('chatterbox: Messages fetched');
 
           // Don't bother if we have nothing to work with
+          data = JSON.parse(data);
+
           if (!data.results || !data.results.length) { return; }
 
           // Get the last message
           var mostRecentMessage = data.results[data.results.length-1];
           var displayedRoom = $('.chat span').first().data('roomname');
           app.stopSpinner();
+          app.populateMessages(data.results, animate);
+          app.populateRooms(data.results);
+          //Fred's extra credit testing of unique messages:
           // Only bother updating the DOM if we have a new message
-          if (mostRecentMessage.objectId !== app.lastMessageId || app.roomname !== displayedRoom) {
-            // Update the UI with the fetched rooms
-            app.populateRooms(data.results);
+          // if (mostRecentMessage.objectId !== app.lastMessageId || app.roomname !== displayedRoom) {
+          //   console.log("We got into the big if statement thing");
+          //   // Update the UI with the fetched rooms
+          //   app.populateRooms(data.results);
 
-            // Update the UI with the fetched messages
-            app.populateMessages(data.results, animate);
+          //   // Update the UI with the fetched messages
+          //   app.populateMessages(data.results, animate);
 
-            // Store the ID of the most recent message
-            app.lastMessageId = mostRecentMessage.objectId;
-          }
+          //   // Store the ID of the most recent message
+          //   app.lastMessageId = mostRecentMessage.objectId;
+          // }
         },
         error: function(data) {
           console.error('chatterbox: Failed to fetch messages');

@@ -1,3 +1,10 @@
+var headers = {
+  "access-control-allow-origin": "*",
+  "access-control-allow-methods": "GET, POST, PUT, DELETE, OPTIONS",
+  "access-control-allow-headers": "content-type, accept",
+  "access-control-max-age": 10, // Seconds.
+  "Content-Type": "application/JSON"
+};
 /*************************************************************
 
 You should implement your request handler function in this file.
@@ -13,6 +20,11 @@ this file and include it in basic-server.js so that it actually works.
 **************************************************************/
 
 var results = [];
+// var messages = {
+//   roomname: results = [],
+//   lobby:
+//   whatever:
+// },
 exports.requestHandler = function(request, response) {
   // Request and Response come from node's http module.
   //
@@ -34,25 +46,38 @@ exports.requestHandler = function(request, response) {
   var statusCode = 200;
 
   // See the note below about CORS headers.
-  var headers = defaultCorsHeaders;
 
   // Tell the client we are sending them plain text.
   //
   // You will need to change this if you are sending something
   // other than plain text, like JSON or HTML.
-  headers['Content-Type'] = "application/JSON";
 
   // .writeHead() writes to the request line and headers of the response,
   // which includes the status and all headers.
   response.writeHead(statusCode, headers);
 
+  var parseURL = function(url){
+    var substring = url.substring(0,9)
+    console.log("This is the substring", substring);
+    if (substring !== '/classes/'){
+      response.writeHead(404, headers);
+      response.end();
+    }
+  };
+  //parseURL(request.url);
 
   if (request.method === 'GET') {
+    console.log("This is the request url: ", request.url);
     //var dummyResponse = {results: ["yes", "no"]};
+    // if (!allOurData[]) {
+    //   response.writeHead(404, headers);
+    // }
+    parseURL(request.url);
     var responseObj = {};
     responseObj['results'] = results;
     var stringResults = JSON.stringify(responseObj);
     //response.write(stringDummy);
+    console.log(results);
     response.end(stringResults); //we can send a json stringified object back
     // console.log("The request method is 'get'!");
   }
@@ -64,13 +89,18 @@ exports.requestHandler = function(request, response) {
     });
     request.on('end', function(){
      var parsed = JSON.parse(newData);
-     console.log(parsed);
      results.push(parsed);
+     console.log("We just posted this!", parsed);
      response.writeHead(201, headers);
      response.end();
     });
     //console.log(request);
    console.log("This is the status code " + statusCode);
+  }
+
+  if (request.method === 'OPTIONS'){
+    response.writeHead(200, headers);
+    response.end();
   }
 
   // Make sure to always call response.end() - Node may not send
@@ -91,10 +121,4 @@ exports.requestHandler = function(request, response) {
 //
 // Another way to get around this restriction is to serve you chat
 // client from this domain by setting up static file serving.
-var defaultCorsHeaders = {
-  "access-control-allow-origin": "*",
-  "access-control-allow-methods": "GET, POST, PUT, DELETE, OPTIONS",
-  "access-control-allow-headers": "content-type, accept",
-  "access-control-max-age": 10 // Seconds.
-};
 
